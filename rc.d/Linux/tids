@@ -1,0 +1,23 @@
+
+#! /bin/sh
+#
+# capibara      Start/stop all the capibara trivial ids system for cduck
+#
+# Author:       Rob J Meijer, <rmeijer@xs4all.nl>
+case "$1" in
+  start)
+	echo -n "Starting Capibara Trivial Intrusion Detection System: "
+	/usr/local/capibara/security/bin/captids.pl
+        echo
+	;;
+  stop)
+	echo -n "Stopping Capibara Trivial Intrusion Detection System: "
+	killall captids.pl
+        echo
+	;;
+  *)
+	echo "Usage: tids {start|stop}"
+	exit 1
+esac
+
+exit 0

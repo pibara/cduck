@@ -1,0 +1,170 @@
+.Dd November 24, 2001
+.Os LINUX 2.4
+.Dt CDUCK.CONF 5 URM
+.Sh NAME
+cduck.conf
+.Nd
+Capibara Distributed Url Cloaking Kit: Configuration
+.Sh DESCRIPTION
+The configuration of the Capibara Distributed Url Cloaking Kit is build
+up around two main configuration files, and two types of zone files.
+
+The main configuration file is split in two for sharing reasons. The
+/usr/local/capibara/cduck/etc/cduck_node.conf holds those configuration
+parameters specific for the node. The /usr/local/capibara/cduck/etc/cduck.conf
+file holds those parts of the configuration that can be shared amongst
+the different nodes of a c-duck system. cduck.conf can in many cases be shared
+amongst the nodes. 
+
+The cduck.conf file can make use of http included include files that have
+the same syntax as the cduck.conf file itself. Thus the flexibility of the
+configuration over different nodes will be as complete as possible
+\fBNote: a configuration line will 'not' be overruled ones it is declared,
+so please consider this when placing include rules in the config files
+\fR
+As cduck makes use of low q.o.s. systems it is suggested that the actual
+config files are stored on some external high q.o.s. http servers. For this 
+reason most of the configuration lines in cduck.conf use a http URL as parameter.
+
+\fBThe cduck.conf file\fR
+
+The cduck.conf file (and all url's included from it) consist of
+configuration lines. There are currently 4 types of configuration line
+types defined:
+
+\fBserver\fR lines:
+
+	server	<name>	<ip>
+
+The server lines define all the different nodes for a cloaking
+group. These servers will be identified as the NS servers for all the main
+domains served.
+
+\fBzone\fR lines:
+
+	zone	<domain>	<url>	<maxlines>
+
+The zone lines identify the domains and name-server zone-files for the
+cloaking group.
+
+\fBmap\fR lines:
+
+	map	<domain>	<url>	<maxlines>
+
+The map lines point to the url's of the map files for the domains served by
+the cloaking group. The '*' domain has special meaning. It is the only
+domain that does not have a zone file associated with it as it involves the
+zone
+
+The \fBmaxlines\fR argument is meant for resource protection, the map and
+zone files will not be allowed more than that number of lines.
+
+\fBinclude\fR lines:
+
+	include	<url>
+
+The include lines refer to other cduck.conf type files that are to be
+included in processing. Please note that implicit trust is assumed for
+included files with the exception of the 'no overrule' rule that can be
+used for some simple protection.
+
+\fBThe ulog and ilog files\fR
+
+The cduck etc dir will contain one of the files ilog or ulog. If syslog should use
+a remote syslog server than the file ilog must exist. If the syslog process should
+use the local /dev/log socket, than the ulog file must exist.
+This file has as content the name of the syslog facility to use. Only one of the following
+facilities is legal to use:
+
+"daemon","local0","local1","local2","local3","local4","local5","local6","local7","user"
+
+If non of these is pressent in the file than the default "user" facility will be used
+by all cduck daemons. 
+
+\fBZONE Files\fR
+
+The zone files describe some DNS RR's that are different than the default
+ 'thats me / thats us' behavior. Currently supported RR's are \fBA\fR ,
+\fBMX\fR and \fBNS\fR records. Most NS, A and SOA records are declared
+implicitly from the server lines in cduck.conf and the configuration in the
+cduck_node.conf file.
+
+The A record is formatted as follows:
+
+	<name>	A	<ip>
+
+The NS record is formatted as follows:
+
+	<name>	NS	<nsname>	<nsip>	<nsname>	<nsip>
+
+The MX record is formatted as follows:
+
+	<NAME>	MX	<mxname>	<mxip>	<mxname>	<mxip>
+
+MX records are the only record type that have no implicit default. To set
+the MX for a domain you must use the "_" as name. This will prompt cduck
+to use the name of the zone  as record name.	
+
+Please note that all names are considered to be in the zone being
+described. No domains should be used in the zone files themselves.
+
+\fBMAP Files\fR
+
+The map files are used for constructing the cloaking HTML code. The map
+files for a zone exist of four types of lines that together are used as a
+map.
+All lines in the file are build out of a key and a value (this will be put
+into a db file by the \fBcapcron.pl\fR script), the key and value are
+separated by a semicolon.
+
+The \fBmap\fR keys are the fully qualified domain names, where a valid
+mapper will have a '1' value. The \fBurl\fR keys consist of the domain
+prefixed with 'url:', and have the cloaked url as their value.
+The \fBtitle\fR keys consists of the domain prefixed with 'titel:', and
+have the title for the cloaking url as their value. Finally the
+\fBkeywords\fR keys consist of the domain prefixed with 'keywords:' and
+have a META type keywords list as value, that will be used in the
+cloaking code meta tags for use by search engines.
+
+
+.Sh EXAMPLES
+
+\fBcduck.conf\fR
+.nf
+server  ns1             213.84.11.74
+map     *               http://capibara.xs4all.nl:8088/mirror/wildcard.map
+zone    capibara.com    http://capibara.xs4all.nl:8088/mirror/capibara.zone
+map     capibara.com    http://capibara.xs4all.nl:8088/mirror/capibara.map
+zone    op.nu           http://capibara.xs4all.nl:8088/mirror/opnu.zone
+map     op.nu           http://capibara.xs4all.nl:8088/mirror/opnu.map
+include	                http://www.xs4all.nl/~rmeijer/cduck.conf
+.fi
+
+\fBzone-files\fR
+.nf
+valey        NS   ns5 205.166.226.38  ns6 64.63.77.89
+urej         NS   ns5 205.166.226.38  ns6 64.63.77.89
+dextroyer    NS   ns5 205.166.226.38  ns6 64.63.77.89
+schiet       A    194.109.190.190
+testbox      A    213.84.11.75
+_            MX   12.23.34.45   
+.fi
+
+\fBmap-files\fR
+
+.nf
+acrogym.op.nu;1
+keywords:acrogym.op.nu;acrogym, akrobatiek, acrobatiek, HLC
+titel:acrogym.op.nu;Informatie over AcroGym
+url:acrogym.op.nu;http://home-1.12move.nl/~sh110583/
+spoofaudit.op.nu;1
+keywords:spoofaudit.op.nu;xcapi
+titel:spoofaudit.op.nu;spoofaudit.op.nu
+url:spoofaudit.op.nu;http://www.xs4all.nl/~rmeijer/spoofaudit.html
+.fi
+.Sh SEE ALSO
+.PP
+\fBcduck_node.conf\fR(5) \fBcduck\fR(1) \fBcapcron.pl\fR(1) \fBcapdns.pl\fR(1) \fBcapdb.pl\fR(1) \fBcaphttp.pl\fR(1) \fBcaptids.pl\fR (1)
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for
+the GNU/Linux system

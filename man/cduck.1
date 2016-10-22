@@ -1,0 +1,64 @@
+.Dd November 24, 2001
+.Os LINUX 2.4
+.Dt CDUCK 1 URM
+.Sh NAME
+cduck
+.Nd
+Capibara Distributed Url Cloaking Kit
+.Sh DESCRIPTION
+
+The Capibara Distributed Url Cloaking Kit (cduck) is a set of programs
+that can be used to create a reliable distributed url cloaking service
+using low q.o.s. connections (like *DSL or cable) with static IP addresses.
+
+The kit consists of 3 daemon scripts and a update script.
+
+The capcron.pl script is meant to run from the crontab of the 'capfetch'
+user. This script is responsible for keeping the databases synchronized
+between nodes.
+
+The capdns.pl script is a simple DNS daemon that takes care of the DNS
+part of the cloaking system. The basic function of this DNS server is to
+provide the reliability to the cloaking system, it will effectively
+answer most DNS queries with a 'thats me' answer.
+
+The capdb.pl script is a local daemon meant to serve the caphttp.pl
+processes with lookup information for the url cloaking service. 
+
+The caphttp.pl script is a simple http server responsible for the actual
+url cloaking service.
+
+.Sh ENVIRONMENT
+The fact that this software uses both server and client components, and
+could in many instances be run on a system that is also used as a
+workstation lies some specific demands on the operating environment.
+CDUCK needs several containment measures for its security:
+
+The usage of a different user for each of the subsystems.
+
+The usage of strict ACL for its working directory.
+
+The usage of a chrooted environment for the total set of subsystems
+
+The usage of user based firewall rules as supplied by the Linux 2.4
+kernel.
+
+With the current version the first two measures are taken by the install
+scripts, the last two measures however are not yet part of the installation
+script, and need therefore to be configured manually.
+.Sh FILES
+/usr/local/capibara/cduck/etc/cduck.conf  
+/usr/local/capibara/cduck/etc/cduck_node.conf
+.\" .Sh EXAMPLES
+.Sh SEE ALSO
+.PP
+\fBcduck.conf\fR(5) \fBcduck_node.conf\fR(5) \fBcapcron.pl\fR(1) \fBcapdns.pl\fR(1) \fBcapdb.pl\fR(1) \fBcaphttp.pl\fR
+(1) \fBcaptids.pl\fR (1)
+.\" .Sh STANDARDS
+.Sh HISTORY
+This toolkit is derived from the former Capibara free url cloaking
+service that has been the first free public url cloaking service in the
+period from  1995 until the beginning of 2001.
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for
+the GNU/Linux system

@@ -1,0 +1,128 @@
+Capibara Distributed Cloaking Kit (cduck) 0.9.6 beta
+
+This package contains the software needed to turn your static-ip dsl/cable
+*nix system into a node of a distributed URL cloaking server.
+The functional software exists of 4 components:
+
+CapDNS:   The Capibara DNS server, this server will answer "that's me" 
+          to most relevant address queries.
+CapDB:    The database part of the url cloaking system.
+CapHTTP:  The Capibara HTTP front-end to the database server. 
+CapCron:  The Database and DNS synchronizing cron script.
+SnowBall: A wrapper script that exists only for the reason that
+          the CapDNS should not give "that's me" answers if either
+          of the other processes is down. Snowball will make sure
+          all the cduck processes die if one of them dies in order
+          to ensure the integrity of the distributed system.
+
+Next to this cduck takes a set of  specific measures for security. 
+
+Some parts of the containment are platform specific and/or very 
+experimental and likely not portable, for this reason the containment
+part of the installation is optional. 
+You should read CONTAINMENT for more information on the security 
+measures build into and around cduck, and on how to use them to the 
+fullest on the Linux >= 2.4 platform, the FreeBSD platform and the
+Solaris platform. If you are successful in running 'make containment'
+on any system other than the three systems named here, or need to take 
+undocumented actions in order to get it up and running on any of the 
+named systems,please contact the author with specifics.
+
+To install the server please first take the following actions:
+
+CHECK PREINSTALL CONDITIONS:
+
+In order to completely run all components of cduck, you will need one of the following:
+
+* A Linux system with 2.4 kernel and iptables 	(http://www.kernel.org/)
+* FreeBSD system with ipfw and fire-walling enabled. (http://www.freebsd.org/)
+* Solaris system (http://www.sun.com/)
+
+
+Further you will need:
+* perl 5.6 or better 		(http://www.cpan.org/src/index.html)
+* libwww-perl 			(http://www.cpan.org/modules/by-module/LWP/)
+* libpcap			(http://www.tcpdump.org/)
+* The Net::Pcap perl module	(http://www.cpan.org/modules/by-module/Net/)
+* Berkeley DB			(http://www.sleepycat.com/)
+* The DB_File perl module	(http://www.cpan.org/modules/by-module/DB_File/)
+
+You might be able to run cduck on an other *nix operating system. 
+This has at this point not been tested to any extend. 
+
+Please make sure you have all of the above installed and working on your system 
+before proceeding to the installation of the containment measures. 
+The creation of a proper chrooted environment for cduck relies on this, and if it is 
+not installed at the time that 'make containment' is run it will result in a non working 
+installation of capcron.
+
+UPGRADING FROM PREVIOUS VERSION:
+
+If you already have a running version of cduck on your system, than you can
+make use of the following procedure:
+
+* run 'make save' to make a backup of your basic setup files.
+* run 'make uninstall' to uninstall the complete capibara tree.
+* run 'make install' to install the updated capibara tree.
+* run 'make rest' to place the backup-ed file into the new tree.
+* run 'make fetch' to get a recent version of the map and zone files.
+* run 'make containment' (optional) if you wish cduck to run chrooted.
+
+CREATING THE USERS AND GROUPS:
+
+You will be able to use 'make users' on most Linux systems, it installs users 
+and groups. I don't quite know how portable it is, and you may wish or have to do the
+steps manually (it is suggested to do so at least on any non Linux system for now) 
+if you don't like install scripts messing with your /etc/ stuff, or if the script 
+tells you it's to stupid to work on your system.
+
+INSTALLING THE SOFTWARE
+
+* run 'make install', this should copy the files to the right
+  place, and set the correct ownerships and acl.
+* run 'make conf' in order to do some node specific configuration.
+* Place the appropriate zone and map files on a reliable secure web server
+  and edit the /usr/local/capibara/etc/cduck.conf file. 
+  See 'man cduck.conf' for more info.
+* Run 'make fetch' to fetch and create the database and zone
+  file for the first time. 
+
+INSTALLING CONTAINMENT
+
+You are suggested to read the file CONTAINMENT for the configuration
+of the advanced security measures for cduck.
+If you feel confident you might type 'make containment' and take close
+note of any messages it returns.
+
+RUNNING THE SOFTWARE
+
+
+* Test the configuration by running 'rc.d/cduck start' and (on systems with 
+  containment installed) 'rc.d/tids start' to see if
+  everything works OK. Is this works OK, than move these scripts to the
+  appropriate places in your rc tree in order to have the services
+  started up at system boot. 
+
+* run 'crontab -e' (as root) and add the following line :
+
+'11 3,15 * * * /usr/local/capibara/bin/capcron.pl'
+
+
+If you have problems running the software, please first consult the file FAQ.draft.
+
+I've only tested it on a limited amount of systems, so there might be some 
+things that don't work out of the box yet for everyone. If this is the case 
+please report any problems or suggestions on http://sourceforge.net/projects/cduck/
+or e-mail me with details.
+
+Rob J Meijer <rmeijer@xs4all.nl>
+
+Until the current release (0.9.6) the cduck user-base seems to be rather fragmented. Most use
+seems to consist of single nodes, and I know of only a few small closed groups of users using 
+cduck within a particular geographic region.
+There would however IMHO be large advantages to using cduck to establish redundancy across
+network-technical or geographic regions. If you are interested in becoming part of a 
+cduck cluster please consider posting on the sourceforge forum:
+
+http://sourceforge.net/forum/forum.php?forum_id=135728
+

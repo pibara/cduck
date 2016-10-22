@@ -1,0 +1,14 @@
+It is suggested that you read README, but if you are willing to take
+full responsibility for anything that may go wrong with the installation
+of this software, than and only than feel free to run:
+
+su 
+make full-install
+
+This will try to do the full install including containment.
+
+If this fails run 
+
+make uninstall 
+
+Before retrying it step by step.

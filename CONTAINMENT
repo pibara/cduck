@@ -1,0 +1,139 @@
+CONTAINMENT
+
+Cduck offers several specific measures in order to facilitate an 
+advanced security configuration of the system and its subsystems. 
+
+These  measures are of the type normally only taken by security conscience 
+professional system administrators. 
+The author of cduck is however convinced that these so called containment 
+measures should be part of the distribution itself as not all potential
+users may be expected to be able to take these measures themselves (as in the
+last few years the impact of different worms has shown)
+
+CHROOT CDUCK DIR
+
+The cduck system can be run in a CHROOT-ed environment, the containment configuration
+script will try to set up a complete CHROOT jail for cduck to run in.
+With this rather cleaned out CHROOT environment any breach in the cduck code will
+as long as the cduck subsystem runs as a non-root user (witch it does after it has gotten hold 
+of the required privileged networking ports) not be able to access any other part of your 
+file-system outside of this jail.
+
+The containment script will do most of the installation for you, however there might
+be one part that it can not do automatically. The script might be unable to install
+the socket needed for doing sys-logging, and a patch of your syslogd rc script might
+be needed in order for syslogd to also use your 'log' socket as input.
+
+On Linux you may need to add the following option to the startup of your syslogd:
+
+-a /usr/local/capibara/cduck/dev/log
+
+On FreeBSD this should be:
+
+-l /usr/local/capibara/cduck/dev/log
+
+A typical Solaris installation will have localhost defined as 'loghost', make containment
+will see this and require no further actions from the user.
+
+
+UNIX USER/GROUP BASED SUBSYSTEM CONTAINMENT
+
+Next to running all the cduck subsystems together in a CHROOT-ed dir, cduck also runs
+every subsystem as a separate 'user', and also defines a separate 'system' user that
+owns many of the system files but does not run any active processes.
+The 'capfetch' user is the account responsible for updating the data files, and is 
+the only user with (limited) write access within some subdirs of the cduck environment.
+Both the users capdb and capdns belong to the same group as capfetch and are granted
+read-access to some of the files that capfetch creates.
+The 'caphttp' user is the account used for the http server part of cduck. As this process
+will communicate with capdb for information resolving, it needs no read access to these
+files, and thus the caphttp user is not a member of the same group as the others.
+This part of the containment is also present when the containment measures are not 
+explicitly installed, but is in this case of rather limited use.
+
+USER BASED FIRE-WALLING
+
+This part of the containment makes use of a rather advanced feature of the Linux 2.4
+net-filter software or the BSD ipfw software that allows to do fire-walling for outgoing 
+traffic based on the user the generating process was running as. This containment will tighten and combine 
+the two security measures mentioned above into a rather complete cduck sand-box.
+The containment installation script will create the script 
+/usr/local/capibara/security/bin/capcontain.sh .
+This script is an example iptables or ipfw script that might need some little tuning, and 
+should be incorporated into your firewall configurations.
+The script will allow the types of network traffic that the separate processes are
+expected to generate, and will disallow any other type of traffic.
+Next to disallowing this traffic it will generate a distinct log line that can be picked 
+up by the trivial intrusion detection system mentioned later on.
+The Solaris platform currently has no user based fire-walling possibilities, thus firewall based containment
+measures on that platform will require explicit actions from the users. Taking into account the average
+knowledge of Solaris home users, this is not expected to be a large hurdle for these users. 
+
+PCAP BAIT-STRINGS
+
+In order for the trivial intrusion detection system to detect possible breaches in 
+security, the 'make nodeconfig' installation script will generate a set of 3 bait-strings.
+These bait strings are installed in 3 different places. The first one is installed in
+a fake 'sh' binary, and in the perl scripts of the different subsystems.
+The second one is put as a file in several crucial dirs of the CHROOT environment.
+The last one is put as a file in several crucial dirs of the main system dir.
+By monitoring outgoing traffic the trivial intrusion detection system will be able
+to early detect any breach in the cduck security, and will be able to take appropriate 
+action. Many system exploits involve trying to spawn an interactive shell. The fake 'sh' 
+binary will if called try to send an udp frame with a bait-string to a server on the 
+Internet. Either the PCAP monitoring process or the iptables rules will catch this action,
+and will prompt the trivial intrusion detection system to take appropriate action.
+
+SYSLOG PIPE
+
+The iptables or ipfw rules will generate log lines to syslogd if any of the rules is met.
+In order for the trivial detection system to be able to act upon this, the system
+needs to be fed the appropriate log lines. For this purpose the /etc/syslogd.conf
+will however need an additional line in order for the syslogd to send the log
+lines to a FIFO that tids will read from.
+For Linux this should be:
+
+kern.*                           |/usr/local/capibara/security/io/ids
+
+And on a FreeBSD system this should be:
+
+security.*                       /usr/local/capibara/security/io/ids
+
+
+TRIVIAL INTRUSION DETECTION SYSTEM
+
+The trivial intrusion detection system or tids is a set of processes that will
+monitor both the appropriate cduck relates/allowed network traffic for bait-strings,
+and the /usr/local/capibara/security/io/ids FIFO for iptables log lines that
+both might indicate a breach in cduck security.
+If a breach is detected it will take appropriate action by killing subsystem
+processes, closing down iptables rules, or even by bringing down a network interface.
+
+ULIMITS
+
+The startup rc scripts for cduck all contain a call to ulimit. This is an attempt
+to further limit the maximum resources of the jail the system runs in. It is however
+unclear if this call has any impact. Further you might wish to limit the disk
+quota of the capfetch user in order to tighten the jail some more. This is not
+available on every system and is therefore at this moment not put into the rc scripts 
+by default.
+
+
+INSTALLING CONTAINMENT
+
+Some parts of the containment are Linux 2.4 or ipfw specific and/or very 
+experimental and likely not portable, for this reason the containment
+part of the installation is optional. It is however suggested that
+you try to install the containment if you are on a Linux system with
+2.4 kernel, a FreeBSD system with ipfw or a Solaris (>=8) system, as this 
+will give you a higher level of security.
+
+If you are on any of these named systems you can after successful
+installation of the normal procedure run 'make containment'. 
+This will try to set up a chroot-ed environment the different daemons can run in, and will 
+also create a shell script in /usr/local/capibara/bin/capcontain.sh that you may use as 
+the example for usage in your iptables configuration. 
+
+It is suggested that you try to make containment and if it results in cduck not working that 
+you run 'make uninstall' and run the install procedure again.
+

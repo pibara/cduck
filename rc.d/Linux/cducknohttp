@@ -1,0 +1,30 @@
+
+#! /bin/sh
+#
+# capibara      Start/stop all the capibara cloaking server components
+#
+# Author:       Rob J Meijer, <rmeijer@xs4all.nl>
+case "$1" in
+  start)
+        if [ -f /usr/local/capibara/security/etc/norestart ]; then
+          echo "cduck apears to have been compromized, not restarting"
+          exit 1
+        fi
+	#Not sure this if this actualy does work
+        echo "Setting ulimit for Capibara servers"
+	ulimit -m 30000 -v 60000 -u 50 -n 64 -t 3600 
+	echo -n "Starting Capibara snowball wrapper for servers: "
+	/bin/nice -n7 /usr/local/capibara/cduck/bin/snowball.pl nohttp
+        echo
+	;;
+  stop)
+	echo -n "Stopping Capibara servers: killing dns, snowball should make others follow"
+	killall capdns.pl
+        echo
+	;;
+  *)
+	echo "Usage: cducknohttp {start|stop}"
+	exit 1
+esac
+
+exit 0

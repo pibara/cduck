@@ -1,0 +1,35 @@
+Todo for the 0.9.7 release
+*  Full code review
+   + caphttp
+   + capcapdb
+   + capcron
+   + capdns
+   + snowball
+   + index.*
+   + captids
+   + instusers
+   + instbin
+   + nodeconfig
+   + containment
+* Review man pages
+* latex/pdf paper on cduck
+* latex/pdf paper on application based containment
+* Release First candidate for a 'stable' 1.0 release (0.9.7)
+
+Todo for 1.0.0 release.
+* 3 months of final beta status and possible bug-fix releases 
+* The 1.0.0 release
+
+After the 0.9.7 release, the cvs tree will be branced. The stable tree 
+will only be extended with bug-fixes in order to reach a stable 1.0 
+release. Work on the new beta tree (1.1.x) will include:
+
+* Create SIPESDL (sipes.sourceforge.net) component integration within tids.
+  This will enable automated global pull the plug actions in case of
+  serious bugs in cduck.
+* Implementation of a DNSSec subset.
+* Implementation of mapping request toolkit for use in setting
+  up a 'give away unused subdomains' cgi interface in the spirit
+  of the old capibara service.
+* Look at portability to the NetBSD and OpenBSD platform.
+* IPv6 support

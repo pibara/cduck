@@ -1,0 +1,30 @@
+
+#! /bin/sh
+#
+# capibara      Start/stop the capibara dns server as standalone dns server
+#
+# Author:       Rob J Meijer, <rmeijer@xs4all.nl>
+case "$1" in
+  start)
+        if [ -f /usr/local/capibara/security/etc/norestart ]; then
+          echo "cduck apears to have been compromized, not restarting"
+          exit 1
+        fi
+        #Not sure this if this actualy does work
+        echo "Setting ulimit for Capibara servers"
+	ulimit -m 30000 -v 60000 -u 50 -n 64 -t 3600 
+	echo -n "Starting Capibara dns server: "
+	/bin/nice -n16 /usr/local/capibara/cduck/bin/capdns.pl
+        echo
+	;;
+  stop)
+	echo -n "Stopping Capibara dns: "
+	killall capdns.pl
+        echo
+	;;
+  *)
+	echo "Usage: capdns {start|stop}"
+	exit 1
+esac
+
+exit 0

@@ -1,0 +1,110 @@
+.Dd March 25, 2002
+.Os LINUX 2.4
+.Dt TIDS.CONF 5 URM
+.Sh NAME
+tids.conf
+.Nd
+Trivial Intrusion Detection System: Configuration
+.Sh DESCRIPTION
+The configuration of the Trivial Intrusion Detection 
+System for cduck is is done through the file tids.conf.
+This file consists of single line configurations 
+representing  single configuration parameters.
+
+\fBmdevice\fR
+
+This configuration parameter sets the name of the 
+device that cduck should use to do pcap network 
+monitoring for the 'bait' strings. 
+Instead of using the device name the format 
+'lookup <ip>'
+might also be used as mdevice parameter. 
+In what case captids will try to lookup the device 
+name using ifconfig.
+
+\fBmfilter\fR
+
+This configuration parameter sets the pcap filter 
+for the monitoring process. 
+This will determine what portion of the traffic on 
+mdevice is monitored.
+
+\fBmtablesfifo\fR
+
+This configuration parameter sets the FIFO that captids 
+should use for the monitoring of syslog messages. 
+If iptables and syslogd are configured as intended than 
+an attempted  breach of the firewall rules would result in 
+a 06 'kernel' syslog message being sent to the FIFO. 
+Captids needs to read from this FIFO in order to be 
+able to detect attempted breaches by compromised cduck 
+subsystems.
+
+\fBsystem\fR \fBchroot\fR \fBsrc\fR 
+
+These three parameters are used to set the 'bait' strings 
+for the ids. The installation of cduck with containment 
+will create appropriate files in the main system dirs, 
+in the dirs of the cduck chroot environment and in the 
+source files of the cduck server scripts.
+
+\fBmdevice\fR
+
+This configuration parameter sets the name of the device 
+that cduck bring down if it is configured to bring down 
+the interface on a particular breach event. Instead of using 
+the device name the format 'lookup <ip>' might also be 
+used as device parameter. 
+In what case captids will try to lookup the device name 
+using ifconfig.
+
+\fBtables\fR
+
+This configuration parameter sets the names of the 
+iptables that cduck bring down if it is configured 
+to bring down the tables on a particular breach event.
+
+\fBusers\fR
+
+This configuration parameter sets the names of the 
+users of who cduck brings down all the processes if it 
+is configured to bring down the users on a particular 
+breach event.
+
+
+\fBlfilter\fR
+
+This configuration parameter sets the pcap filter for 
+the logging process. 
+The logging process will keep limited a buffer of 
+matching IP frames and will flush all these frames 
+to a pcap file if it is prompted by one of the monitoring 
+processes of captids.
+
+\fBlbuffer\fR
+
+This configuration parameter sets the maximum size of 
+the buffer for the pcap logging process. 
+
+\fBbreach chroot\fR ,  \fBbreach src\fR ,  \fBbreach tables\fR , \fBbreach system\fR , 
+
+These configuration parameter set the actions that are 
+to be taken if captids detects a particular type of a 
+security breach.
+The actions that could be taken are:
+
+  \fBtables\fR : shut down the configured iptables.
+  \fBusers\fR : shut down the processes of the configured users.
+  \fBinterface\fR : shut down the configured interface.
+  \fBnorestart\fR : create a 'norestart' file to indicate to 
+    the cduck rc script that it shouldn't restart cduck.
+
+
+.fi
+.Sh FILES
+/usr/local/capibara/security/tids.conf
+.Sh SEE ALSO
+.PP
+\fBcduck\fR(1) \fBcaptids.pl\fR(1)
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for the GNU/Linux system

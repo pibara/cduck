@@ -1,0 +1,31 @@
+.Dd November 30, 2001
+.Os LINUX 2.4
+.Dt CAPHTTP.PL 1 URM
+.Sh NAME
+caphttp.pl
+.Nd
+Capibara Distributed Url Cloaking Kit : caphttp.pl
+.Sh DESCRIPTION
+
+The caphttp.pl script is one part of the http portion of cduck. For performance and resource usage reason
+it is undesirable to use the Berkeley db map file in the forking caphttp.pl process, and it is desirable
+to keep the forking caphttp.pl process as slim as possible.
+
+capdb.pl is responsible for giving all the caphttp.pl processes access to the information contained in the
+\fBdb_current\fR file. 
+
+caphttp.pl is responsible for the http/1.1 part of the system. It functions as a http/1.1 server. It will
+examine the HTTP/1.1 request for the server requested, and will from this ask the capdb.pl process to look
+up this name in the map file.
+Dependant on the response from capdb it will return HTML code to its peer.
+
+.Sh FILES
+/usr/local/capibara/cduck/etc/cduck_node.conf
+.\" .Sh EXAMPLES
+.Sh SEE ALSO
+.PP
+\fBcduck\fR(1) \fBcduck.conf\fR(5) \fBcduck_node.conf\fR(5) \fBcapdns.pl\fR(1) \fBcapcron.pl\fR(1) \fBcapdb.pl\fR(1) \fBcaptids.pl\fR (1)
+.\" .Sh STANDARDS
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for
+the GNU/Linux system

@@ -1,0 +1,12 @@
+User state info in sockets opened as root:
+  The cduck components need to start as root in order to be able to bind to the required
+  privileged ports. Although iptables (on Linux) and ipfw (on FreeBSD) both are able to
+  detect and stop traffic that any cduck process might generate on newly created sockets
+  that were not there when the process changed its uid, the privileged port sockets
+  are not detected or stopped by the uses specific tables or ipfw lines.
+  This problem will limit the extend of the containment measures as provided by the
+  trivial intrusion detection system that comes with cduck.
+  It appears that this is an intrinsic problem that exist with user based fire-walling and
+  privileged ports. Any help in finding a solution for this problem is very welcome.
+
+

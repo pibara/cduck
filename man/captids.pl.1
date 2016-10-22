@@ -1,0 +1,45 @@
+.Dd March 27, 2002
+.Os LINUX 2.4
+.Dt CAPTIDS.PL 1 URM
+.Sh NAME
+captids.pl
+.Nd
+Capibara Distributed Url Cloaking Kit : captids.pl
+.Sh DESCRIPTION
+
+The captids.pl script is an experimental part of the containment measures 
+for the capibara distributed url cloaking kit. 
+It is a TRIVIAL INTRUSION DETECTION SYSTEM that uses a non promisc form 
+of sniffing on all protocols handled by cduck and allowed by the iptables 
+script to the cduck subsystem. This sniffing is combined with a monitoring
+of attempted breaches of iptables rules attempted from within one of the cduck
+subsystem network sand-box environments.
+
+The 'make containment' script has put a few simple trip-wires into the sources, 
+the chrooted environment and the system directories that cduck scans for. 
+If cduck detects in the cduck outgoing traffic any of the data that is coming 
+from the cduck processes with any of the specific characteristics set 
+by 'make containment', than captids will dependent of the type of intrusion 
+detected and the tids configuration, stop any traffic coming from the cduck 
+system by trimming down its iptables rules to deny all traffic, by killing all 
+the processes owned by the cduck users, or in the worst case bring down 
+the relevant interface.
+
+The trivial intrusion detection system is (like any IDS) not waterproof, 
+its main function is to raise the bar substantially for writing exploits 
+for cduck.
+
+.Sh FILES
+/usr/local/capibara/security/etc/tids.conf
+/usr/local/capibara/security/bin/captids.pl
+/usr/local/capibara/security/bin/capcontain.sh
+/usr/local/capibara/security/io/ids
+/usr/local/capibara/security/dump/*.pcap
+.\" .Sh EXAMPLES
+.Sh SEE ALSO
+.PP
+\fBtids.conf\fR(5) \fBcduck\fR(1) \fBcduck.conf\fR(5) \fBcduck_node.conf\fR(5) \fBcapdns.pl\fR(1) \fBcapcron.pl\fR(1) \fBcaphttp.pl\fR (1) \fBcapdb.pl\fR (1)
+.\" .Sh STANDARDS
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for
+the GNU/Linux system

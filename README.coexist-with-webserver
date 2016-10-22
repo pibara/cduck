@@ -1,0 +1,19 @@
+cduck can coexist with an other web server on the same machine.
+To accomplish this you should follow the normal procedures for 
+installation except for the rc.d/cduck script. You should use the
+rc.d/cducknohttp rc script instead. This script will not start up 
+the httpd included with cduck.
+
+On your web-server you will now need to install either the cgi 
+script misc/index.cgi as the default index, or the php 
+script misc/index.php.
+
+Please consult your server software documentation for instructions.
+You will also want to change the $rp variable in the index.cgi 
+or index.php script to your administrators e-mail address. 
+Please take care in the .cgi to escape the '@' as '\@'.
+
+At this point the .cgi is more complete than the .php, for this reason
+you should probably first try the .cgi and if this fails and you
+are unable to reconfigure your web-server correctly you should try to
+fall back on the .php script.

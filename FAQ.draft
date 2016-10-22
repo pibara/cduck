@@ -1,0 +1,86 @@
+Question 1:
+
+  When starting cduck I get an error saying :
+  'Connection refused (SOCK_DGRAM after trying SOCK_STREAM)'
+
+Answer 1:
+  
+  Mostly this problem arises if you are using the chroot environment but
+  have forgotten to ad the special syslog file in the chroot environment
+  to be used by syslogd as an input.
+  If you add the file /usr/local/capibara/cduck/dev/log to the startup
+  of your syslogd using the flag appropriate for your OS (for Linux use
+  -a and for FreeBSD use -l).
+
+Question 2:
+
+  Something is wrong with cduck, but cduck does not report any problems to
+  syslog or stdout.
+
+Answer 2:
+
+  Your syslog configuration, and cduck's facility might make the syslog entries
+  end up somewhere unexpected. One very common place in Linux appears to be 
+  /var/log/user.log . Cduck by default uses the 'user.notice' , 'user.debug' and
+  'user.crit' facility/level combinations. To fully see what is going on add a line
+  to your /etc/syslog.conf in order to log all information (see the man pages for 
+  syslog.conf)
+
+Question 3:
+  I have a windows system (NT/9x/2000/XP) and want to use it as server, when will a
+  version of cduck for my platform become available?
+
+Answer 3:
+  Although it would be possible and not extremely hard for me to create a version of 
+  cduck that would run under these platforms, the risks involved with this for the end
+  user are just to big to justify doing the port. 
+  Cduck implements 3 layers of security on Linux and FreeBSD platform, and 2 layers
+  on the Solaris platform. On the windows platforms non of the 3 layers can be implemented
+  due to the limitations of these operating systems. Having said this, the sources
+  of cduck are available under the GPL license. This means that if anyone would want
+  to create a version for any of these platforms, they are welcome to do so, and I would
+  even support them in their efforts to an extend.
+
+Question 4:
+  These 3 layers of  security are not needed in most other server software, why do I need them
+  for cduck. 
+
+Answer 4:
+  Users of this other software are given the responsibility to implement part of these security measures
+  themselves, and/or to keep track of code security issues regarding the software. For professional companies 
+  it is quite possible to assign employees the task of installing these measures and the task of keeping up with
+  code security. The target audience for cduck however are home users that are not likely to have the skills
+  to install software and than secure it. Keeping track of 'code' security can further become an job taking
+  up much time and effort. Cduck tries to compensate for the fact that users will mostly have neither the skill
+  or the time to opt for any of the two options that you are left with this other software. Note that this
+  does not mean that cduck users could completely discard code security issues, it only means that code security
+  issues will have a lower impact, and can thus allow for a longer time to fix resulting from the low time 
+  resources of the users.
+
+Question 5:
+  Why should I run 'make containment', it takes extra trouble to get syslog working and 
+  it fills up the /usr/local/capibara dir with multiple megabytes, this seems like a waste of 
+  time and space.
+
+Answer 5:
+  Although I have taken care to make cduck a secure server, there will very likely be remaining 
+  bugs that could allow a malicious person to use cduck to get into your system. I do not expect
+  cduck without containment to be less secure than other servers, in fact I expect it to be more 
+  secure due to the limited functionality it implements, and the division into smaller subsystems.
+  However as the answer to question 4 states, the intended audience is somewhat different.
+  Containment implements two different measures, it puts the cduck servers into a chroot environment,
+  and on the Linux and FreeBSD platform also creates specific firewall rules. These two measures
+  help to contain an attacker (or worm) using a bug in cduck. If cduck is broken, the attacker will be
+  constrained to the chroot environment, and to the extremely limited networking possibilities the firewall
+  rules give him/her/it. Further the trivial intrusion detection system that comes with cduck will,
+  if the attacker tries to go beyond these constraints, detect this and collapse the whole running cduck 
+  system.
+
+Question 6:
+  I've uploaded my zone and map files to my web account at my ISP, but if I try to look at them
+  the ISP's web-server gives a server error.
+
+Answer 6:
+  This appears to be a problem with the .map extension. Many web-servers use .map for some internal
+  server module. Change the extension to something els and it should be OK.
+

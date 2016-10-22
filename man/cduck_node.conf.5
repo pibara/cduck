@@ -1,0 +1,55 @@
+.Dd November 30, 2001
+.Os LINUX 2.4
+.Dt CDUCK_NODE.CONF 5 URM
+.Sh NAME
+cduck_node.conf
+.Nd
+Capibara Distributed Url Cloaking Kit: Configuration , node
+.Sh DESCRIPTION
+The configuration of the Capibara Distributed Url Cloaking Kit is build
+up around two main configuration files, and two types of zone files.
+
+The main configuration file is split in two for sharing reasons. The
+/usr/local/capibara/cduck/etc/cduck_node.conf holds those configuration
+parameters specific for the node. The /usr/local/capibara/cduck/etc/cduck.conf
+file holds those parts of the configuration that can be shared amongst
+the different nodes of a c-duck system. 
+
+The cduck_node.conf file is a fairly simple configuration file. It has a set of 3
+different configuration lines. Each config line exists of a parameter and a value
+separated by one or more space characters. 
+
+\fBbindip\fR
+
+This configuration parameter sets the (dotted decimal notation) IP address the cduck servers
+should use to bind to on this node.
+
+\fBextip\fR
+
+This configuration parameter sets the (dotted decimal notation) IP address the cduck servers
+on this node is reachable on from the Internet. This in most cases would be the same IP address
+as the bindip address, however some configurations that place the server behind a NAT layer
+may need these to be different values.
+
+
+\fBrp\fR
+
+This configuration parameter sets the RP value cduck should use in SOA responses. The notation
+of this e-mail address should be formatted as specified in rfc1034/1335. In most cases this means
+replacing the '@' by a '.' 
+
+.Sh EXAMPLES
+
+\fBcduck_node.conf\fR
+.nf
+
+bindip  192.168.1.250
+extip   213.84.11.75
+rp      rmeijer.xs4all.nl
+.fi
+
+.Sh SEE ALSO
+.PP
+\fBcduck.conf\fR(5) \fBcduck\fR(1) \fBcapcron.pl\fR(1) \fBcapdns.pl\fR(1) \fBcapdb.pl\fR(1) \fBcaphttp.pl\fR(1) \fBcaptids.pl\fR (1)
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for the GNU/Linux system

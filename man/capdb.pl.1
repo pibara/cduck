@@ -1,0 +1,28 @@
+.Dd November 30, 2001
+.Os LINUX 2.4
+.Dt CAPDB.PL 1 URM
+.Sh NAME
+capdb.pl
+.Nd
+Capibara Distributed Url Cloaking Kit : capdb.pl
+.Sh DESCRIPTION
+
+The capdb.pl script is one part of the http portion of cduck. For performance and resource usage reason
+it is undesirable to use the Berkeley db map file in the forking caphttp.pl process, and it is desirable
+to keep the forking caphttp.pl process as slim as possible.
+
+capdb.pl is responsible for giving all the caphttp.pl processes access to the information contained in the
+\fBdb_current\fR file. capdb.pl is called with the use of local UDP packets. It will lookup the db entries belonging
+to the requested domain name, and if possible will return the HTML code that caphttp.pl will need to return.
+
+.Sh FILES
+/usr/local/capibara/cduck/db/db_current
+.\" .Sh EXAMPLES
+.Sh SEE ALSO
+.PP
+\fBcduck\fR(1) \fBcduck.conf\fR(5) \fBcduck_node.conf\fR(5) \fBcapdns.pl\fR(1) \fBcapcron.pl\fR(1) \fBcaphttp.pl\fR
+(1) \fBcaptids.pl\fR (1)
+.\" .Sh STANDARDS
+.Sh AUTHORS
+This manual page was written  by  Rob J Meijer <rmeijer@xs4all.nl>, for
+the GNU/Linux system
